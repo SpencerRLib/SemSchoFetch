@@ -14,7 +14,6 @@ class SemanticScholarCitationScraper:
         
         if api_key:
             self.headers["x-api-key"] = api_key  
-        
 
         self.delay = 3.1 if not api_key else 0.31 
         self.has_api_key = api_key is not None
@@ -161,7 +160,7 @@ class SemanticScholarCitationScraper:
 
 def main():
 
-# add my DOI list here
+# add dois
     dois = [
 "10.3390/nu16152432",
 "10.1073/pnas.2317686121",
@@ -176,20 +175,18 @@ def main():
     print("   S2AG API Documentation: https://api.semanticscholar.org/")
     print()
     
-    # Process DOIs and get forward citations
     results_df = scraper.process_dois(dois)
     
     if results_df.empty:
         print(" No citations found. Check your DOIs or try different papers.")
         return
     
-    # Save to CSV
+    # write to csv
     output_file = "semantic_scholar_forward_citations.csv"
     results_df.to_csv(output_file, index=False, encoding='utf-8')
     print(f" Results saved to {output_file}")
     print(f" Total forward citations found: {len(results_df)}")
     
-    # Display summary statistics
     print("\n Summary by original paper:")
     summary = results_df.groupby(['original_doi', 'original_title']).agg({
         'citing_title': 'count',
@@ -201,4 +198,5 @@ def main():
         print(f"   • {title}: {row['citation_count']} citations (earliest: {row['earliest_citation']})")
 
 if __name__ == "__main__":
+
     main()
